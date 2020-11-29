@@ -6,6 +6,10 @@ TARGET_BIN = $(patsubst %.o, %, $(CXX_OBJ))
 
 INC_DIRS = -I ../libutils/include
 CXX_FLAGS = -fPIC
+
+#windows platform
+#LD_FLAGS = -lpthread -L../libs libutils.so
+#linux platform
 LD_FLAGS = -lpthread -L../libs -lutils
 
 CXX_SRC = $(wildcard *.cpp)
@@ -15,7 +19,7 @@ OBJS = $(CXX_OBJ)
 all:$(TARGET_BIN)
 
 $(TARGET_BIN):%:%.o
-	$(CXX) $^ -o $@ $(LD_FLAGS)
+	$(CXX) -o $@ $^ $(LD_FLAGS)
 
 %.o:%.cpp
 	$(CXX) $(INC_DIRS) -c $^ -o $@ $(CXX_FLAGS)

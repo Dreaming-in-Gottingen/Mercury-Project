@@ -17,6 +17,7 @@
 #ifndef _MERCURY_ERRORS_H_
 #define _MERCURY_ERRORS_H_
 
+#include <stdint.h>
 #include <sys/types.h>
 #include <errno.h>
 
