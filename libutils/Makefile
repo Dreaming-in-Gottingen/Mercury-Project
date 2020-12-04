@@ -13,6 +13,7 @@ CXX_SRC = RefBase.cpp \
           Timers.cpp \
           Debug.cpp \
           TextOutput.cpp \
+          SharedBuffer.cpp \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)
