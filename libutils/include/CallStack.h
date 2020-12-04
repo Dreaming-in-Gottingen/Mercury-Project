@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ANDROID_CALLSTACK_H
-#define ANDROID_CALLSTACK_H
+#ifndef _LIBS_UTILS_CALLSTACK_H_
+#define _LIBS_UTILS_CALLSTACK_H_
 
 #include <android/log.h>
 #include <utils/String8.h>
@@ -92,4 +92,4 @@ private:
 
 }; // namespace android
 
-#endif // ANDROID_CALLSTACK_H
+#endif // _LIBS_UTILS_CALLSTACK_H_

@@ -10,6 +10,9 @@
 #include <sys/syscall.h>
 #include <unistd.h>
 
+namespace Mercury {
+// ---------------------------------------------------------------------------
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -104,5 +107,9 @@ printf("%s %d %d E %s: [%s:%d] " format"\n", timeString(), (int)getpid(), (int)s
 #ifdef __cplusplus
 }
 #endif
+
+// ---------------------------------------------------------------------------
+}; // namespace Mercury
+
 
 #endif // _LIBS_UTILS_LOG_H_

@@ -2,6 +2,8 @@
 
 #include <Timers.h>
 
+using namespace Mercury;
+
 int main(void)
 {
     printf("-----------TimersDemo begin------------\n");

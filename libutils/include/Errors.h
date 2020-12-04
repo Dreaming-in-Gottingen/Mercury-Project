@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef _MERCURY_ERRORS_H_
-#define _MERCURY_ERRORS_H_
+#ifndef _LIBS_UTILS_ERRORS_H_
+#define _LIBS_UTILS_ERRORS_H_
 
 #include <stdint.h>
 #include <sys/types.h>
@@ -86,4 +86,4 @@ enum {
     
 // ---------------------------------------------------------------------------
     
-#endif // _MERCURY_ERRORS_H_
+#endif // _LIBS_UTILS_ERRORS_H_

@@ -33,6 +33,8 @@
 #include <windows.h>
 #endif
 
+namespace Mercury {
+
 nsecs_t systemTime(int clock)
 {
 #if defined(HAVE_POSIX_CLOCKS)
@@ -71,3 +73,5 @@ int toMillisecondTimeoutDelay(nsecs_t referenceTime, nsecs_t timeoutTime)
     }
     return timeoutDelayMillis;
 }
+
+}; // namespace Mercury

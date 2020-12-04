@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef _MERCURY_STRONG_POINTER_H_
-#define _MERCURY_STRONG_POINTER_H_
+#ifndef _LIBS_UTILS_STRONG_POINTER_H_
+#define _LIBS_UTILS_STRONG_POINTER_H_
 
 #include <stdint.h>
 #include <sys/types.h>
@@ -206,4 +206,4 @@ void sp<T>::set_pointer(T* ptr) {
 
 // ---------------------------------------------------------------------------
 
-#endif // _MERCURY_STRONG_POINTER_H_
+#endif // _LIBS_UTILS_STRONG_POINTER_H_

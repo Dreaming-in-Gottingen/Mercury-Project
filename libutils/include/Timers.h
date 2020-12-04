@@ -24,6 +24,9 @@
 #include <sys/types.h>
 #include <sys/time.h>
 
+namespace Mercury {
+// ---------------------------------------------------------------------------
+
 // ------------------------------------------------------------------
 // C API
 
@@ -102,5 +105,9 @@ int toMillisecondTimeoutDelay(nsecs_t referenceTime, nsecs_t timeoutTime);
 #ifdef __cplusplus
 } // extern "C"
 #endif
+
+// ---------------------------------------------------------------------------
+}; // namespace Mercury
+
 
 #endif // _LIBS_UTILS_TIMERS_H_

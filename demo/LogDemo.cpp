@@ -5,6 +5,8 @@
 
 #include <Log.h>
 
+using namespace Mercury;
+
 extern int test();
 
 int main(void)
