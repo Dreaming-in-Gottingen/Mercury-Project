@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <sys/syscall.h>
 #include <unistd.h>
+#include <assert.h>
 
 namespace Mercury {
 // ---------------------------------------------------------------------------
@@ -27,7 +28,7 @@ extern "C" {
 #define LOG_TAG "MP_TAG"
 #endif
 
-#define CONDITION(cond)     (__builtin_expect((cond)!=0, 0))
+#define CONDITION(cond)     (__builtin_expect(!!(cond), 1))
 
 static char *timeString() {
     struct timespec ts;
@@ -57,20 +58,6 @@ printf("%s %d %d V %s: [%s:%d] " format"\n", timeString(), (int)getpid(), (int)s
 #define ALOGD(format, ...) \
 printf("%s %d %d D %s: [%s:%d] " format"\n", timeString(), (int)getpid(), (int)syscall(SYS_gettid), LOG_TAG, __FUNCTION__, __LINE__, ##__VA_ARGS__)
 
-#define LOG_ALWAYS_FATAL_IF(cond, format, ...) \
-    ( (CONDITION(cond)) \
-    ? (printf("%s %d %d E %s: [%s:%d] " format"\n", timeString(), (int)getpid(), (int)syscall(SYS_gettid), LOG_TAG, __FUNCTION__, __LINE__, ##__VA_ARGS__)) \
-    : ((int) 0) )
-
-#define ALOGW_IF(cond, format, ...) \
-    ( (CONDITION(cond)) \
-    ? (printf("%s %d %d W %s: [%s:%d] " format"\n", timeString(), (int)getpid(), (int)syscall(SYS_gettid), LOG_TAG, __FUNCTION__, __LINE__, ##__VA_ARGS__)) \
-    : ((int) 0) )
-
-#define ALOG_ASSERT(cond, format, ...) \
-    ( (CONDITION(cond)) \
-    ? (printf("%s %d %d E %s: [%s:%d] " format"\n", timeString(), (int)getpid(), (int)syscall(SYS_gettid), LOG_TAG, __FUNCTION__, __LINE__, ##__VA_ARGS__)) \
-    : ((int) 0) )
 
 #else
 
@@ -78,22 +65,9 @@ printf("%s %d %d D %s: [%s:%d] " format"\n", timeString(), (int)getpid(), (int)s
 
 #define ALOGD(format, ...)
 
-#define LOG_ALWAYS_FATAL_IF(cond, format, ...) \
-    ( (CONDITION(cond)) \
-    ? ((int) 0) \
-    : ((int) 0) )
+#endif // MP_LOG_DEBUG
 
-#define ALOGW_IF(cond, format, ...) \
-    ( (CONDITION(cond)) \
-    ? ((int) 0) \
-    : ((int) 0) )
-
-#define ALOG_ASSERT(cond, format, ...) \
-    ( (CONDITION(cond)) \
-    ? ((int) 0) \
-    : ((int) 0) )
-
-#endif
+//-----------------------------------------------------------------------------------------------
 
 #define ALOGI(format, ...) \
 printf("%s %d %d I %s: [%s:%d] " format"\n", timeString(), (int)getpid(), (int)syscall(SYS_gettid), LOG_TAG, __FUNCTION__, __LINE__, ##__VA_ARGS__)
@@ -103,6 +77,38 @@ printf("%s %d %d W %s: [%s:%d] " format"\n", timeString(), (int)getpid(), (int)s
 
 #define ALOGE(format, ...) \
 printf("%s %d %d E %s: [%s:%d] " format"\n", timeString(), (int)getpid(), (int)syscall(SYS_gettid), LOG_TAG, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+
+
+#define LOG_ALWAYS_FATAL(...) do { ALOGE(__VA_ARGS__); assert(0); } while(0)
+
+#define LOG_ALWAYS_FATAL_IF(cond, format, ...)                                                  \
+    do {                                                                                        \
+        if (!(cond)) {                                                                          \
+            printf("%s %d %d E %s: [%s:%d] " format"\n", timeString(), (int)getpid(),           \
+                    (int)syscall(SYS_gettid), LOG_TAG, __FUNCTION__, __LINE__, ##__VA_ARGS__);  \
+            assert(0);                                                                          \
+        }                                                                                       \
+    } while(0)
+
+#define ALOGW_IF(cond, format, ...)                                                             \
+    do {                                                                                        \
+        if ((cond)) {                                                                           \
+            printf("%s %d %d W %s: [%s:%d] " format"\n", timeString(), (int)getpid(),           \
+                    (int)syscall(SYS_gettid), LOG_TAG, __FUNCTION__, __LINE__, ##__VA_ARGS__);  \
+        }                                                                                       \
+    } while(0)
+
+#define LITERAL_TO_STRING_INTERNAL(x)    #x
+#define LITERAL_TO_STRING(x) LITERAL_TO_STRING_INTERNAL(x)
+
+#define ALOG_ASSERT(cond, str)                                \
+    do {                                                      \
+        if (!(cond)) {                                        \
+            printf(__FILE__":" LITERAL_TO_STRING(__LINE__)    \
+                    " CHECK(" #cond ") failed: " str);        \
+            assert(0);                                        \
+        }                                                     \
+    } while(0)
 
 #ifdef __cplusplus
 }
