@@ -19,6 +19,8 @@
 
 //#include <utils/Errors.h>
 #include <Errors.h>
+#include <String8.h>
+#include <String16.h>
 
 #include <stdint.h>
 #include <string.h>
@@ -26,8 +28,8 @@
 // ---------------------------------------------------------------------------
 namespace Mercury {
 
-//class String8;
-//class String16;
+class String8;
+class String16;
 
 class TextOutput
 {
@@ -80,8 +82,8 @@ TextOutput& operator<<(TextOutput& to, float);
 TextOutput& operator<<(TextOutput& to, double);
 TextOutput& operator<<(TextOutput& to, TextOutputManipFunc func);
 TextOutput& operator<<(TextOutput& to, const void*);
-//TextOutput& operator<<(TextOutput& to, const String8& val);
-//TextOutput& operator<<(TextOutput& to, const String16& val);
+TextOutput& operator<<(TextOutput& to, const String8& val);
+TextOutput& operator<<(TextOutput& to, const String16& val);
 
 class TypeCode 
 {

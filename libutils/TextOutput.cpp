@@ -23,6 +23,9 @@
 //#include <utils/String8.h>
 //#include <utils/String16.h>
 
+#include <String8.h>
+#include <String16.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -125,17 +128,17 @@ TextOutput& operator<<(TextOutput& to, const void* val)
     return to;
 }
 
-//TextOutput& operator<<(TextOutput& to, const String8& val)
-//{
-//    to << val.string();
-//    return to;
-//}
-//
-//TextOutput& operator<<(TextOutput& to, const String16& val)
-//{
-//    to << String8(val).string();
-//    return to;
-//}
+TextOutput& operator<<(TextOutput& to, const String8& val)
+{
+    to << val.string();
+    return to;
+}
+
+TextOutput& operator<<(TextOutput& to, const String16& val)
+{
+    to << String8(val).string();
+    return to;
+}
 
 static void textOutputPrinter(void* cookie, const char* txt)
 {

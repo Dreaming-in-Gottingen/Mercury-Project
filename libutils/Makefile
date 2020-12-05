@@ -14,6 +14,10 @@ CXX_SRC = RefBase.cpp \
           Debug.cpp \
           TextOutput.cpp \
           SharedBuffer.cpp \
+          String8.cpp \
+          String16.cpp \
+          Unicode.cpp \
+          Static.cpp \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)
