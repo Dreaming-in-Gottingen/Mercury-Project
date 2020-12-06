@@ -7,8 +7,6 @@
 
 using namespace Mercury;
 
-extern int test();
-
 int main(void)
 {
     printf("-----------LogDemo begin------------\n");
