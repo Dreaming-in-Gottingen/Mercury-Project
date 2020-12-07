@@ -20,6 +20,9 @@ int main(void)
     ALOG_ASSERT(2>1, "test ALOG_ASSERT!");
     //ALOG_ASSERT(2<1, "test ALOG_ASSERT!");
 
+    //LOG_FATAL_IF(2<1, "line:%d", __LINE__);
+    //LOG_FATAL_IF(2>1, "line:%d", __LINE__);
+
     //LOG_ALWAYS_FATAL("line:%d", __LINE__);
     //LOG_ALWAYS_FATAL("test LOG_ALWAYS_FATAL!");
 
