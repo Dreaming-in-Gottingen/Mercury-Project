@@ -18,6 +18,7 @@ CXX_SRC = RefBase.cpp \
           String16.cpp \
           Unicode.cpp \
           Static.cpp \
+          VectorImpl.cpp \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)

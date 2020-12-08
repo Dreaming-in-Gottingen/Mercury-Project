@@ -14,7 +14,7 @@ int main(void)
     SharedBuffer *psb = SharedBuffer::alloc(4096);
     strcpy((char*)psb->data(), "SharedBufferDemo alloc 4096 Bytes!");
 
-    printf("size=%u, data=(%p, %s)\n", psb->size(), psb->data(), (char*)psb->data());
+    printf("size=%zu, data=(%p, %s)\n", psb->size(), psb->data(), (char*)psb->data());
 
     psb->release();
 
