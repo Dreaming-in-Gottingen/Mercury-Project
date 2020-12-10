@@ -19,6 +19,7 @@ CXX_SRC = RefBase.cpp \
           Unicode.cpp \
           Static.cpp \
           VectorImpl.cpp \
+          Threads.cpp \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)
