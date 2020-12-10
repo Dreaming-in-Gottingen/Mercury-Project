@@ -110,13 +110,13 @@ printf("%s %d %d E %s: [%s:%d] " format"\n", timeString(), (int)getpid(), (int)s
 #define LITERAL_TO_STRING_INTERNAL(x)    #x
 #define LITERAL_TO_STRING(x) LITERAL_TO_STRING_INTERNAL(x)
 
-#define ALOG_ASSERT(cond, str)                                \
-    do {                                                      \
-        if (!(cond)) {                                        \
-            printf(__FILE__":" LITERAL_TO_STRING(__LINE__)    \
-                    " CHECK(" #cond ") failed: " str);        \
-            assert(0);                                        \
-        }                                                     \
+#define ALOG_ASSERT(cond, format, ...)                                          \
+    do {                                                                        \
+        if (!(cond)) {                                                          \
+            printf(__FILE__":" LITERAL_TO_STRING(__LINE__)                      \
+                    " CHECK(" #cond ") failed: " format"\n", ##__VA_ARGS__);    \
+            assert(0);                                                          \
+        }                                                                       \
     } while(0)
 
 #ifdef __cplusplus

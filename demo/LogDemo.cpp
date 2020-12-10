@@ -18,7 +18,7 @@ int main(void)
     ALOGE("this is error!");
 
     ALOG_ASSERT(2>1, "test ALOG_ASSERT!");
-    //ALOG_ASSERT(2<1, "test ALOG_ASSERT!");
+    //ALOG_ASSERT(2<1, "test ALOG_ASSERT in line[%d]!", __LINE__);
 
     //LOG_FATAL_IF(2<1, "line:%d", __LINE__);
     //LOG_FATAL_IF(2>1, "line:%d", __LINE__);
