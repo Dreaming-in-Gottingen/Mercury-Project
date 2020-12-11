@@ -14,9 +14,9 @@ int main(void)
 
     String8 file("/mnt/sdcard/video.mp4");
     ALOGD("file string=%s", file.string());
-    ALOGD("     size=%d", file.size());
-    ALOGD("     length=%d", file.length());
-    ALOGD("     bytes=%d", file.bytes());
+    ALOGD("     size=%zd", file.size());
+    ALOGD("     length=%zd", file.length());
+    ALOGD("     bytes=%zd", file.bytes());
     ALOGD("     isEmpty=%d", file.isEmpty());
     ALOGD("     getPathLeaf=%s", file.getPathLeaf().string());
     ALOGD("     getPathExtension=%s", file.getPathExtension().string());
