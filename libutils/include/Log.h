@@ -92,7 +92,7 @@ printf("%s %d %d E %s: [%s:%d] " format"\n", timeString(), (int)getpid(), (int)s
 
 #define LOG_ALWAYS_FATAL_IF(cond, format, ...)                                                  \
     do {                                                                                        \
-        if (!(cond)) {                                                                          \
+        if ((cond)) {                                                                           \
             printf("%s %d %d E %s: [%s:%d] " format"\n", timeString(), (int)getpid(),           \
                     (int)syscall(SYS_gettid), LOG_TAG, __FUNCTION__, __LINE__, ##__VA_ARGS__);  \
             assert(0);                                                                          \
