@@ -741,8 +741,9 @@ int Thread::_threadLoop(void* user)
     sp<Thread> strong(self->mHoldSelf);
 
     // below Android code may not need -- zjz
-    //wp<Thread> weak(strong);
-    //self->mHoldSelf.clear();
+    // when promote solved, revert to Android code.
+    wp<Thread> weak(strong);
+    self->mHoldSelf.clear();
 
 #ifdef HAVE_ANDROID_OS
     // this is very useful for debugging with gdb
@@ -792,13 +793,14 @@ int Thread::_threadLoop(void* user)
         }
 
         // below Android code may not need -- zjz
+        // revert to Android code.
         // Release our strong reference, to let a chance to the thread
         // to die a peaceful death.
-        //strong.clear();
+        strong.clear();
         // And immediately, re-acquire a strong reference for the next loop
-        //strong = weak.promote();
+        strong = weak.promote();
     } while(strong != 0);
-    strong->decStrong(NULL);
+    //strong->decStrong(NULL);
 
     return 0;
 }
