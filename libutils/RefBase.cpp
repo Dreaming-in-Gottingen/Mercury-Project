@@ -328,7 +328,7 @@ bool RefBase::weakref_type::attemptIncStrong(const void* id)
         // we're in the easy/common case of promoting a weak-reference
         // from an existing strong reference.
         //if (android_atomic_cmpxchg(curCount, curCount+1, &impl->mStrong) == 0) {
-        if (__sync_bool_compare_and_swap(&impl->mStrong, curCount, curCount+1) == 0) {
+        if (__sync_bool_compare_and_swap(&impl->mStrong, curCount, curCount+1) == 1) {
             break;
         }
         // the strong count has changed on us, we need to re-assert our
@@ -355,7 +355,7 @@ bool RefBase::weakref_type::attemptIncStrong(const void* id)
             // promote this object; we need to do that atomically.
             while (curCount > 0) {
                 //if (android_atomic_cmpxchg(curCount, curCount + 1, &impl->mStrong) == 0) {
-                if (__sync_bool_compare_and_swap(&impl->mStrong, curCount, curCount + 1) == 0) {
+                if (__sync_bool_compare_and_swap(&impl->mStrong, curCount, curCount + 1) == 1) {
                     break;
                 }
                 // the strong count has changed on us, we need to re-assert our
@@ -403,7 +403,7 @@ bool RefBase::weakref_type::attemptIncStrong(const void* id)
     while (curCount >= INITIAL_STRONG_VALUE) {
         //ALOG_ASSERT(curCount > INITIAL_STRONG_VALUE, "attemptIncStrong in %p underflowed to INITIAL_STRONG_VALUE", this);
         //if (android_atomic_cmpxchg(curCount, curCount-INITIAL_STRONG_VALUE, &impl->mStrong) == 0) {
-        if (__sync_bool_compare_and_swap(&impl->mStrong, curCount, curCount-INITIAL_STRONG_VALUE) == 0) {
+        if (__sync_bool_compare_and_swap(&impl->mStrong, curCount, curCount-INITIAL_STRONG_VALUE) == 1) {
             break;
         }
         // the strong-count changed on us, we need to re-assert the situation,
@@ -422,7 +422,7 @@ bool RefBase::weakref_type::attemptIncWeak(const void* id)
     //ALOG_ASSERT(curCount >= 0, "attemptIncWeak called on %p after underflow", this);
     while (curCount > 0) {
         //if (android_atomic_cmpxchg(curCount, curCount+1, &impl->mWeak) == 0) {
-        if (__sync_bool_compare_and_swap(&impl->mWeak, curCount, curCount+1) == 0) {
+        if (__sync_bool_compare_and_swap(&impl->mWeak, curCount, curCount+1) == 1) {
             break;
         }
         curCount = impl->mWeak;
