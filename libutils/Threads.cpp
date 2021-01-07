@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
-#include <errno.h>
+#include <Errno.h>
 #include <assert.h>
 #include <unistd.h>
 
