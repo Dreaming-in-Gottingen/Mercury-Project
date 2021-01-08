@@ -17,9 +17,11 @@
 #ifndef _LIBS_UTILS_CALLSTACK_H_
 #define _LIBS_UTILS_CALLSTACK_H_
 
-#include <android/log.h>
-#include <utils/String8.h>
+//#include <android/log.h>
+//#include <utils/String8.h>
 #include <corkscrew/backtrace.h>
+
+#include <String8.h>
 
 #include <stdint.h>
 #include <sys/types.h>
@@ -70,7 +72,8 @@ public:
 
     // Dump a stack trace to the log using the supplied logtag.
     void log(const char* logtag,
-             android_LogPriority priority = ANDROID_LOG_DEBUG,
+             /*android_LogPriority priority = ANDROID_LOG_DEBUG,*/
+             int priority = 0,
              const char* prefix = 0) const;
 
     // Dump a stack trace to the specified file descriptor.
@@ -90,6 +93,6 @@ private:
     backtrace_frame_t mStack[MAX_DEPTH];
 };
 
-}; // namespace android
+}; // namespace Mercury
 
 #endif // _LIBS_UTILS_CALLSTACK_H_

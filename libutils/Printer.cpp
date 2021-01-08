@@ -97,7 +97,7 @@ void LogPrinter::printLine(const char* string) {
 
 void LogPrinter::printRaw(const char* string) {
     //__android_log_print(mPriority, mLogTag, "%s%s", mPrefix, string);
-    ALOGD("[%s] %s%s", mLogTag, mPrefix, string);
+    ALOGI("[%s] %s%s", mLogTag, mPrefix, string);
 }
 
 

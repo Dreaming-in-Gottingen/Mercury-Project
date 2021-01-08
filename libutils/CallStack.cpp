@@ -22,6 +22,10 @@
 //#include <utils/Log.h>
 //#include <corkscrew/backtrace.h>
 
+#include <Log.h>
+#include <CallStack.h>
+#include <Printer.h>
+
 #include <Errors.h>
 
 namespace Mercury {
@@ -111,7 +115,7 @@ void CallStack::update(int32_t ignoreDepth, int32_t maxDepth, pid_t tid) {
     mCount = count > 0 ? count : 0;
 }
 
-void CallStack::log(const char* logtag, android_LogPriority priority, const char* prefix) const {
+void CallStack::log(const char* logtag, int priority/*android_LogPriority priority*/, const char* prefix) const {
     LogPrinter printer(logtag, priority, prefix, /*ignoreBlankLines*/false);
     print(printer);
 }
