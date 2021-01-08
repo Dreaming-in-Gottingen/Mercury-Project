@@ -86,6 +86,8 @@ typedef struct ucontext {
 #else
 
 // add for pass compile system
+// fix compile issue both on i386 and x64 platform
+#ifndef REG_GS
 enum {
   REG_GS = 0, REG_FS, REG_ES, REG_DS,
   REG_EDI, REG_ESI, REG_EBP, REG_ESP,
@@ -94,6 +96,8 @@ enum {
   //REG_EFL, REG_UESP, REG_SS
   REG_EIP = 14,
 };
+#endif
+
 #ifndef __USE_GNU
 // glibc has its own renaming of the Linux kernel's structures.
 #define __USE_GNU // For REG_EBP, REG_ESP, and REG_EIP.
