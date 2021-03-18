@@ -7,7 +7,7 @@ TARGET_BIN = $(patsubst %.o, %, $(CXX_OBJ))
 INC_DIRS = -I ../../libutils/include    \
            -I ../../foundation/include  \
            -I ../include
-CXX_FLAGS = -g -fPIC -Wno-multichar
+CXX_FLAGS = -g -fPIC -Wno-multichar -fpermissive
 
 #windows platform
 #LD_FLAGS = -lpthread -L../libs libutils.so

@@ -9,7 +9,8 @@ INC_DIRS = -I include -I ../libutils/include -I ../foundation/include
 CXX_FLAGS = -fPIC -Wno-multichar
 LD_FLAGS = -lpthread -L../libs -lutils -lfoundation
 
-CXX_SRC = MetaData.cpp     \
+CXX_SRC = MetaData.cpp        \
+          MediaBuffer.cpp     \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)
