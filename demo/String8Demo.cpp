@@ -1,4 +1,5 @@
 //#define LOG_NDEBUG
+#define LOG_LEVEL 3
 #define LOG_TAG "String8Demo"
 #include <Log.h>
 
@@ -20,6 +21,10 @@ int main(void)
     ALOGD("     isEmpty=%d", file.isEmpty());
     ALOGD("     getPathLeaf=%s", file.getPathLeaf().string());
     ALOGD("     getPathExtension=%s", file.getPathExtension().string());
+
+    const char *ptr = "hello,world";
+    String8 fmt = String8::format("(char*) %s", ptr);
+    ALOGD("fmt: [%s]", fmt.string());
 
     printf("-----------String8Demo end------------\n");
 
