@@ -1,4 +1,5 @@
 //#define LOG_NDEBUG 0
+#define LOG_LEVEL 3
 #define LOG_TAG "ReflectorTester"
 
 #include <Log.h>

@@ -5,8 +5,10 @@ CXX = g++
 TARGET_LIB = libutils.so
 INSTALL_LIB_PATH = ../libs
 
+PLATFORM_FLAGS = -DANDROID_SMP=1 -D__i386__ -D__x86_64__
+
 INC_DIRS = -I include
-CXX_FLAGS = -fPIC
+CXX_FLAGS = -fPIC $(PLATFORM_FLAGS)
 LD_FLAGS = -lpthread
 
 CXX_SRC = RefBase.cpp \
@@ -22,6 +24,7 @@ CXX_SRC = RefBase.cpp \
           Threads.cpp \
           Printer.cpp \
           CallStack.cpp \
+          atomic.cpp \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)
