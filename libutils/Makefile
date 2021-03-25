@@ -9,7 +9,7 @@ PLATFORM_FLAGS = -DANDROID_SMP=1 -D__i386__ -D__x86_64__
 
 INC_DIRS = -I include
 CXX_FLAGS = -fPIC $(PLATFORM_FLAGS)
-LD_FLAGS = -lpthread
+LD_FLAGS = -lpthread -L../libs -lcorkscrew
 
 CXX_SRC = RefBase.cpp \
           Timers.cpp \
