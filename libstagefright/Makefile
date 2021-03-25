@@ -11,6 +11,7 @@ LD_FLAGS = -lpthread -L../libs -lutils -lfoundation
 
 CXX_SRC = MetaData.cpp        \
           MediaBuffer.cpp     \
+          ESDS.cpp            \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)
