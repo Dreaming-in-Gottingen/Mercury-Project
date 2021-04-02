@@ -13,6 +13,9 @@ CXX_SRC = MetaData.cpp        \
           MediaBuffer.cpp     \
           ESDS.cpp            \
           Utils.cpp           \
+          MediaDefs.cpp       \
+          MediaSource.cpp     \
+          MPEG2TSWriter.cpp   \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)
