@@ -15,6 +15,11 @@
 #include <errno.h>
 #include <string.h>
 
+// muxer's write type:
+// 0 - use open or fopen to write local file
+// 1 - write callback, usually used for rtsp stream.
+#define WRITE_CB 1
+
 using namespace Mercury;
 
 /*
@@ -197,6 +202,34 @@ status_t FakeMediaSource::openBsFile(const char *path, uint8_t type)
     return OK;
 }
 
+class WriterWrapper: public RefBase {
+public:
+    WriterWrapper() {
+        ALOGI("WriterWrapper ctor! this=%p", this);
+    }
+    void prepareFile(const char *file_path) {
+        mpVideoFp = fopen(file_path, "wb");
+        if (mpVideoFp == NULL) {
+            ALOGE("fopen(%s) failed: %s", file_path, strerror(errno));
+        }
+    }
+    static ssize_t writeDataWrapper(void *me, const void *data, size_t size) {
+        return static_cast<WriterWrapper*>(me)->writeData(data, size);
+    }
+
+protected:
+    virtual ~WriterWrapper() {
+        ALOGI("WriterWrapper dtor! this=%p", this);
+    }
+
+private:
+    FILE *mpVideoFp;
+
+    ssize_t writeData(const void *data, size_t size) {
+        return fwrite(data, 1, size, mpVideoFp);
+    }
+};
+
 int main()
 {
     ALOGI("---------------MPEG2TSWriter begin------------------");
@@ -208,7 +241,13 @@ int main()
     aac_source->openBsFile("V3_avbs", 1);
 
     const char *ts_path = "video.ts";
+#ifdef WRITE_CB
+    sp<WriterWrapper> writer = new WriterWrapper();
+    writer->prepareFile(ts_path);
+    sp<MPEG2TSWriter> muxer = new MPEG2TSWriter(writer.get(), WriterWrapper::writeDataWrapper);
+#else
     sp<MPEG2TSWriter> muxer = new MPEG2TSWriter(ts_path);
+#endif
 
     muxer->addSource(avc_source);
     muxer->addSource(aac_source);
@@ -217,6 +256,7 @@ int main()
     while (!muxer->reachedEOS()) {
         sleep(1);
     }
+    ALOGD("app detect muxer has reached EOS, thus stop it!");
     muxer->stop();
 
     muxer.clear();
