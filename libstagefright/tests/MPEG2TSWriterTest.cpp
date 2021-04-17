@@ -50,6 +50,7 @@ protected:
     }
 
 private:
+    sp<MetaData> mFormat;
     uint8_t mBsType; // 0-h264; 1-aac
     FILE *mpBsFp;
 
@@ -120,14 +121,7 @@ status_t FakeMediaSource::stop()
 
 sp<MetaData> FakeMediaSource::getFormat()
 {
-    sp<MetaData> meta = new MetaData();
-
-    if (mBsType == 0) {
-        meta->setCString(kKeyMIMEType, MEDIA_MIMETYPE_VIDEO_AVC /*"video/avc"*/);
-    } else {
-        meta->setCString(kKeyMIMEType, MEDIA_MIMETYPE_AUDIO_AAC /*"audio/mp4a-latm"*/);
-    }
-    return meta;
+    return mFormat;
 }
 
 status_t FakeMediaSource::read(MediaBuffer **buffer, const ReadOptions *options)
@@ -198,6 +192,13 @@ status_t FakeMediaSource::openBsFile(const char *path, uint8_t type)
     // so I distinguish av_track by using this flag.
     // in file, video use index=0, audio use index=1.
     mBsType = type;
+
+    mFormat = new MetaData();
+    if (mBsType == 0) {
+        mFormat->setCString(kKeyMIMEType, MEDIA_MIMETYPE_VIDEO_AVC /*"video/avc"*/);
+    } else {
+        mFormat->setCString(kKeyMIMEType, MEDIA_MIMETYPE_AUDIO_AAC /*"audio/mp4a-latm"*/);
+    }
 
     return OK;
 }
