@@ -1,0 +1,243 @@
+//#define LOG_NDEBUG
+#define LOG_LEVEL 3
+#define LOG_TAG "MPEG4WriterTest"
+#include <Log.h>
+
+#include <RefBase.h>
+#include <Errors.h>
+
+#include <MetaData.h>
+#include <MediaBuffer.h>
+#include <MediaDefs.h>
+#include <MediaSource.h>
+#include <MPEG4Writer.h>
+
+#include <errno.h>
+#include <string.h>
+
+#include "mediarecorder.h"
+
+using namespace Mercury;
+
+/*
+ * for Android4.4
+ * Muxer(MPEG2TSWriter:SourceInfo) have two type(audio+video) of MediaSouces, which is OMXCodec
+ * OMXCodec's MediaSource is CameraSource or AudioSource
+ * CameraSource <-> OMXCodec <-> Muxer
+ * now, I replace OMXCodec with local bitstream file to simulate it's behaviour,
+ * for the reason that OMXCodec has not porting OK and reduce complexity.
+ */
+class FakeMediaSource: public MediaSource {
+public:
+    FakeMediaSource() {
+        ALOGI("FakeMediaSource ctor! this=%p", this);
+    }
+
+    // below pure virtual api must be implemented because of derived from MediaSource
+    status_t start(MetaData *params = NULL);
+    status_t stop();
+    sp<MetaData> getFormat();
+    status_t read(MediaBuffer **buffer, const ReadOptions *options = NULL);
+
+    status_t openBsFile(const char *path, uint8_t type);
+
+protected:
+    virtual ~FakeMediaSource() {
+        ALOGI("FakeMediaSource dtor! this=%p", this);
+    }
+
+private:
+    sp<MetaData> mFormat;
+    uint8_t mBsType; // 0-h264; 1-aac
+    FILE *mpBsFp;
+
+    uint8_t *mpBuf;
+    uint8_t *mpHeader;
+
+    bool mbCsdSend;
+    uint8_t *mpCsdData;
+    uint8_t mCsdLen;
+
+    MediaBuffer *mpMediaBuffer;
+};
+
+status_t FakeMediaSource::start(MetaData *params)
+{
+    ALOGI("MPEG4Writer pretend to start!");
+    return OK;
+}
+
+status_t FakeMediaSource::stop()
+{
+    ALOGI("MPEG4Writer ask FakeMediaSource to stop!");
+    fclose(mpBsFp);
+    mpBsFp = NULL;
+
+    free(mpBuf);
+    free(mpHeader);
+    free(mpCsdData);
+    return OK;
+}
+
+sp<MetaData> FakeMediaSource::getFormat()
+{
+    return mFormat;
+}
+
+status_t FakeMediaSource::read(MediaBuffer **buffer, const ReadOptions *options)
+{
+    // ts muxer's first is csd
+    // but mp4 muxer's first frame is SyncFrame
+    //if (mbCsdSend == false) {
+    //    *buffer = mpMediaBuffer;
+    //    mbCsdSend = true;
+    //} else {
+        int size0, size1;
+        int idx, flag, dura;
+        long long pts;
+        int ret;
+        int cnt = 0;
+
+        /*
+         * read one frame bitstream from local file
+         * format: $$AV$$%d,%d,%lld,%d,%d,%d:...bitstream...
+         * format: $$AV$$idx,flag,pts,dura,size0,size1:...bitstream...
+         * idx: 0-avc; 1-aac
+         * flag: 1-avc sync frame
+         * pts/dura: by unit of ms
+         * size0/size1: size1 usually is zero
+         */
+        while ((ret = fread(mpHeader, 1, 42, mpBsFp)) == 42) {
+            sscanf(mpHeader, "$$AV$$%d,%d,%lld,%d,%d,%d:", &idx, &flag, &pts, &dura, &size0, &size1);
+            cnt++;
+            ret = fread(mpBuf, 1, size0, mpBsFp);
+            if (size1 != 0)
+                ret = fread(mpBuf+size0, 1, size1, mpBsFp);
+            // may skip lots of package until find my wanted track data.
+            if (mBsType == idx) {
+                ALOGD("ret=%d, offset=%#lx, search_cnt=%d, idx=%d, sync_flag=%d, pts=%lld, dura=%d, size0=%#x, size1=%#x",
+                    ret, ftell(mpBsFp), cnt, idx, flag, pts, dura, size0, size1);
+                mpMediaBuffer = new MediaBuffer(mpBuf, size0+size1);
+                mpMediaBuffer->meta_data()->setInt64(kKeyTime, pts*1000);
+                // MPEG4Writer need this, otherwise will crash
+                mpMediaBuffer->meta_data()->setInt64(kKeyDecodingTime, pts*1000); // a must param
+                mpMediaBuffer->meta_data()->setInt32(kKeyIsSyncFrame, flag);
+                *buffer = mpMediaBuffer;
+                // for the purpose of av sync
+                // file's framerate/samplerate: 30fps + 8k
+                // that means duration: video-33ms, audio-128ms
+                if (mBsType == 0) {
+                    usleep(33*1000);
+                } else {
+                    usleep(128*1000);
+                }
+                return OK;
+            }
+        }
+        if (ret != 42) {
+            ALOGI("rd_ret=%d, must be EOF found!", ret);
+            return ERROR_END_OF_STREAM;
+        }
+    //}
+
+    return OK;
+}
+
+status_t FakeMediaSource::openBsFile(const char *path, uint8_t type)
+{
+    mpBsFp = fopen(path, "rb");
+    if (mpBsFp == NULL) {
+        ALOGE("fopen() failed: %s", strerror(errno));
+        return NAME_NOT_FOUND;
+    }
+    ALOGI("success to open file(%s)! mpBsFp=%p", path, mpBsFp);
+
+    // two threads open and read the same file.
+    // so I distinguish av_track by using this flag.
+    // in file, video use index=0, audio use index=1.
+    mBsType = type;
+
+    mFormat = new MetaData();
+    if (mBsType == 0) {
+        mFormat->setCString(kKeyMIMEType, MEDIA_MIMETYPE_VIDEO_AVC /*"video/avc"*/);
+    } else {
+        mFormat->setCString(kKeyMIMEType, MEDIA_MIMETYPE_AUDIO_AAC /*"audio/mp4a-latm"*/);
+    }
+
+    int size0, size1;
+    int idx, flag, dura;
+#define MAX_BS_BUF 1024*1024 // should make sure: one bitstream len <= 1MB
+
+    mpBuf = (uint8_t *)malloc(MAX_BS_BUF);
+    mpHeader = (uint8_t *)malloc(64);
+
+    // header format: $$AV$$csd%d,%d:
+    // first data block is video csd
+    memset(mpHeader, 0, 64);
+
+    // video csd extract
+    fread(mpHeader, 1, 15, mpBsFp);
+    int ret = sscanf(mpHeader, "$$AV$$csd%d,%d:", &idx, &size0);
+    ALOGD("sscanf_ret:%d, idx:%d, vcsd_len:%d", ret, idx, size0);
+    fread(mpBuf, 1, size0, mpBsFp);
+    if (mBsType == idx) {
+        mpCsdData = (uint8_t*)malloc(size0);
+        memcpy(mpCsdData, mpBuf, size0);
+        mCsdLen = size0;
+        mpMediaBuffer = new MediaBuffer(mpCsdData, mCsdLen);
+        ALOGD("spspps:%#x,%#x,%#x,%#x,%#x,%#x", mpCsdData[0], mpCsdData[1], mpCsdData[2], mpCsdData[3], mpCsdData[4], mpCsdData[5]);
+        // must provide these params to MPEG4Writer compared with MPEG2TSWriter.
+        mFormat->setData(kKeyAVCC, kTypeAVCC, mpCsdData, mCsdLen);
+        mFormat->setInt32(kKeyWidth, 1280); // must
+        mFormat->setInt32(kKeyHeight, 720); // must
+    }
+
+    // audio csd extract
+    fread(mpHeader, 1, 15, mpBsFp);
+    ret = sscanf(mpHeader, "$$AV$$csd%d,%d:", &idx, &size0);
+    ALOGD("sscanf_ret:%d, idx:%d, acsd_len:%d", ret, idx, size0);
+    fread(mpBuf, 1, size0, mpBsFp);
+    if (mBsType == idx) {
+        mpCsdData = (uint8_t*)malloc(size0);
+        memcpy(mpCsdData, mpBuf, size0);
+        mCsdLen = size0;
+        mpMediaBuffer = new MediaBuffer(mpCsdData, mCsdLen);
+        ALOGD("aac_header:%#x,%#x", mpCsdData[0], mpCsdData[1]);
+    }
+
+    mbCsdSend = false;
+    return OK;
+}
+
+int main()
+{
+    ALOGI("---------------MPEG4WriterTest begin------------------");
+
+    sp<FakeMediaSource> avc_source = new FakeMediaSource();
+    avc_source->openBsFile("V3_avbs", 0);
+
+    //sp<FakeMediaSource> aac_source = new FakeMediaSource();
+    //aac_source->openBsFile("V3_avbs", 1);
+
+    const char *ts_path = "video.mp4";
+    sp<MPEG4Writer> muxer = new MPEG4Writer(ts_path);
+
+    muxer->addSource(avc_source);
+    //muxer->addSource(aac_source);
+
+    sp<MetaData> meta = new MetaData();
+    meta->setInt64(kKeyTime, 0);
+    meta->setInt32(kKeyFileType, OUTPUT_FORMAT_MPEG_4);
+    meta->setInt32(kKeyBitRate, 6*1000*1000);
+    muxer->start(meta.get());
+    while (!muxer->reachedEOS()) {
+        sleep(1);
+    }
+    ALOGD("app detect muxer has reached EOS, thus stop it!");
+    muxer->stop();
+
+    muxer.clear();
+    avc_source.clear();
+
+    ALOGI("---------------MPEG4WriterTest end------------------");
+}
