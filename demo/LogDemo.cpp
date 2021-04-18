@@ -17,6 +17,8 @@ int main(void)
     ALOGW("this is warning!");
     ALOGE("this is error!");
 
+    CHECK(123!=321);
+
     ALOG_ASSERT(2>1, "test ALOG_ASSERT!");
     //ALOG_ASSERT(2<1, "test ALOG_ASSERT in line[%d]!", __LINE__);
 

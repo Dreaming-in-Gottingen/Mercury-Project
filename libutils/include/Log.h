@@ -57,7 +57,8 @@ static char *timeString() {
     return timeStr;
 }
 
-#define CHECK(b) (b ? (void)0 : abort())
+//#define CHECK(b) (b ? (void)0 : abort())
+#define CHECK(b) assert((b))
 
 #define CHECK_EQ(a, b) CHECK((a) == (b))
 
