@@ -20,6 +20,7 @@ CXX_SRC = MetaData.cpp        \
           DataSource.cpp      \
           FileSource.cpp      \
           TinyCacheSource.cpp \
+          MediaExtractor.cpp  \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)
