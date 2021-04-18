@@ -17,6 +17,9 @@ CXX_SRC = MetaData.cpp        \
           MediaSource.cpp     \
           MPEG2TSWriter.cpp   \
           MPEG4Writer.cpp     \
+          DataSource.cpp      \
+          FileSource.cpp      \
+          TinyCacheSource.cpp \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)
