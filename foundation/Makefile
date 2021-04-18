@@ -20,6 +20,7 @@ CXX_SRC = AAtomizer.cpp     \
           ParsedMessage.cpp \
           base64.cpp        \
           hexdump.cpp       \
+          ABitReader.cpp    \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)

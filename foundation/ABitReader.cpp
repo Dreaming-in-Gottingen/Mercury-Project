@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-#include "ABitReader.h"
 
-//#include <media/stagefright/foundation/ADebug.h>
 #include "include/ADebug.h"
+#include "include/ABitReader.h"
 
 namespace Mercury {
 
