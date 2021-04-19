@@ -90,7 +90,7 @@ protected:
     virtual ~MediaBuffer();
 
 private:
-    //friend class MediaBufferGroup;
+    friend class MediaBufferGroup;
     //friend class OMXDecoder;
 
     // For use by OMXDecoder, reference count must be 1, drop reference
