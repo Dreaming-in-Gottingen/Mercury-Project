@@ -27,7 +27,7 @@
 //#include "include/MP3Extractor.h"
 //#include "include/MPEG2PSExtractor.h"
 //#include "include/MPEG2TSExtractor.h"
-//#include "include/MPEG4Extractor.h"
+#include "include/MPEG4Extractor.h"
 //#include "include/NuCachedSource2.h"
 //#include "include/OggExtractor.h"
 //#include "include/WAVExtractor.h"
@@ -163,7 +163,7 @@ void DataSource::RegisterDefaultSniffers() {
         return;
     }
 
-    //RegisterSniffer_l(SniffMPEG4);
+    RegisterSniffer_l(SniffMPEG4);
     //RegisterSniffer_l(SniffMatroska);
     //RegisterSniffer_l(SniffOgg);
     //RegisterSniffer_l(SniffWAV);

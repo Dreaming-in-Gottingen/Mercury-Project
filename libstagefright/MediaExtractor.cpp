@@ -20,7 +20,7 @@
 
 //#include "include/AMRExtractor.h"
 //#include "include/MP3Extractor.h"
-//#include "include/MPEG4Extractor.h"
+#include "include/MPEG4Extractor.h"
 //#include "include/WAVExtractor.h"
 //#include "include/OggExtractor.h"
 //#include "include/MPEG2PSExtractor.h"
@@ -60,13 +60,13 @@ sp<MediaExtractor> MediaExtractor::Create(
     if (mime == NULL) {
         float confidence;
         if (!source->sniff(&tmp, &confidence, &meta)) {
-            ALOGV("FAILED to autodetect media content.");
+            ALOGI("FAILED to autodetect media content.");
 
             return NULL;
         }
 
         mime = tmp.string();
-        ALOGV("Autodetected media content as '%s' with confidence %.2f",
+        ALOGI("Autodetected media content as '%s' with confidence %.2f",
              mime, confidence);
     }
 
@@ -95,11 +95,12 @@ sp<MediaExtractor> MediaExtractor::Create(
 #endif
 
     MediaExtractor *ret = NULL;
-#if 0
     if (!strcasecmp(mime, MEDIA_MIMETYPE_CONTAINER_MPEG4)
             || !strcasecmp(mime, "audio/mp4")) {
         ret = new MPEG4Extractor(source);
-    } else if (!strcasecmp(mime, MEDIA_MIMETYPE_AUDIO_MPEG) ||
+    }
+#if 0
+    else if (!strcasecmp(mime, MEDIA_MIMETYPE_AUDIO_MPEG) ||
          ret = new MP3Extractor(source, meta);
     } else if (!strcasecmp(mime, MEDIA_MIMETYPE_AUDIO_AMR_NB)
             || !strcasecmp(mime, MEDIA_MIMETYPE_AUDIO_AMR_WB)

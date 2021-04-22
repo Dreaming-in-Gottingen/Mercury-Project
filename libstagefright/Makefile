@@ -24,6 +24,7 @@ CXX_SRC = MetaData.cpp        \
           SampleTable.cpp     \
           SampleIterator.cpp  \
           MediaBufferGroup.cpp\
+          MPEG4Extractor.cpp  \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)

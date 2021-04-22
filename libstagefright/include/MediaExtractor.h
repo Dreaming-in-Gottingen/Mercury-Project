@@ -69,11 +69,11 @@ public:
 #endif
 
 protected:
-    //MediaExtractor() : mIsDrm(false) {}
+    MediaExtractor() : mIsDrm(false) {}
     virtual ~MediaExtractor() {}
 
 private:
-    //bool mIsDrm;
+    bool mIsDrm;
 
     MediaExtractor(const MediaExtractor &);
     MediaExtractor &operator=(const MediaExtractor &);
