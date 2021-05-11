@@ -23,8 +23,8 @@
 #include "include/MPEG4Extractor.h"
 //#include "include/WAVExtractor.h"
 //#include "include/OggExtractor.h"
-//#include "include/MPEG2PSExtractor.h"
-//#include "include/MPEG2TSExtractor.h"
+#include "include/MPEG2PSExtractor.h"
+#include "include/MPEG2TSExtractor.h"
 //#include "include/DRMExtractor.h"
 //#include "include/WVMExtractor.h"
 //#include "include/FLACExtractor.h"
@@ -98,6 +98,10 @@ sp<MediaExtractor> MediaExtractor::Create(
     if (!strcasecmp(mime, MEDIA_MIMETYPE_CONTAINER_MPEG4)
             || !strcasecmp(mime, "audio/mp4")) {
         ret = new MPEG4Extractor(source);
+    } else if (!strcasecmp(mime, MEDIA_MIMETYPE_CONTAINER_MPEG2TS)) {
+        ret = new MPEG2TSExtractor(source);
+    } else if (!strcasecmp(mime, MEDIA_MIMETYPE_CONTAINER_MPEG2PS)) {
+        ret = new MPEG2PSExtractor(source);
     }
 #if 0
     else if (!strcasecmp(mime, MEDIA_MIMETYPE_AUDIO_MPEG) ||
@@ -115,8 +119,6 @@ sp<MediaExtractor> MediaExtractor::Create(
     } else if (!strcasecmp(mime, MEDIA_MIMETYPE_CONTAINER_MATROSKA) ||
                !strcasecmp(mime, MEDIA_MIMETYPE_CONTAINER_WEBM)) {
         ret = new MatroskaExtractor(source);
-    } else if (!strcasecmp(mime, MEDIA_MIMETYPE_CONTAINER_MPEG2TS)) {
-        ret = new MPEG2TSExtractor(source);
     } else if (!strcasecmp(mime, MEDIA_MIMETYPE_CONTAINER_WVM)) {
         return new WVMExtractor(source);
     } else if (!strcasecmp(mime, MEDIA_MIMETYPE_CONTAINER_FLV)) {
@@ -125,8 +127,6 @@ sp<MediaExtractor> MediaExtractor::Create(
                 !strcasecmp(mime, MEDIA_MIMETYPE_AUDIO_AAC2) ||
                 !strcasecmp(mime, MEDIA_MIMETYPE_AUDIO_AAC3)) {
         ret = new AACExtractor(source, meta);
-    } else if (!strcasecmp(mime, MEDIA_MIMETYPE_CONTAINER_MPEG2PS)) {
-        ret = new MPEG2PSExtractor(source);
     }
 #endif
 

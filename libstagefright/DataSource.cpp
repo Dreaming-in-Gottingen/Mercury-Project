@@ -25,8 +25,8 @@
 //#include "include/FLACExtractor.h"
 //#include "include/HTTPBase.h"
 //#include "include/MP3Extractor.h"
-//#include "include/MPEG2PSExtractor.h"
-//#include "include/MPEG2TSExtractor.h"
+#include "include/MPEG2PSExtractor.h"
+#include "include/MPEG2TSExtractor.h"
 #include "include/MPEG4Extractor.h"
 //#include "include/NuCachedSource2.h"
 //#include "include/OggExtractor.h"
@@ -164,15 +164,15 @@ void DataSource::RegisterDefaultSniffers() {
     }
 
     RegisterSniffer_l(SniffMPEG4);
+    RegisterSniffer_l(SniffMPEG2TS);
+    RegisterSniffer_l(SniffMPEG2PS);
     //RegisterSniffer_l(SniffMatroska);
     //RegisterSniffer_l(SniffOgg);
     //RegisterSniffer_l(SniffWAV);
     //RegisterSniffer_l(SniffFLAC);
     //RegisterSniffer_l(SniffAMR);
-    //RegisterSniffer_l(SniffMPEG2TS);
     //RegisterSniffer_l(SniffMP3);
     //RegisterSniffer_l(SniffAAC);
-    //RegisterSniffer_l(SniffMPEG2PS);
     //RegisterSniffer_l(SniffWVM);
     //RegisterSniffer_l(SniffAVI);
     //RegisterSniffer_l(SniffFLV);

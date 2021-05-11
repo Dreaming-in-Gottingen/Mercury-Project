@@ -7,7 +7,7 @@ INSTALL_LIB_PATH = ../libs
 
 INC_DIRS = -I include -I ../libutils/include -I ../foundation/include
 CXX_FLAGS = -fPIC -Wno-multichar
-LD_FLAGS = -lpthread -L../libs -lutils -lfoundation
+LD_FLAGS = -lpthread -L../libs -lutils -lfoundation -L../libs -lstagefright_mpeg2ts
 
 CXX_SRC = MetaData.cpp        \
           MediaBuffer.cpp     \
@@ -25,12 +25,12 @@ CXX_SRC = MetaData.cpp        \
           SampleIterator.cpp  \
           MediaBufferGroup.cpp\
           MPEG4Extractor.cpp  \
+          avc_utils.cpp       \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)
 
 all:$(TARGET_LIB)
-	mkdir -p $(INSTALL_LIB_PATH)
 	mv $(TARGET_LIB) $(INSTALL_LIB_PATH)
 
 $(TARGET_LIB):$(OBJS)
