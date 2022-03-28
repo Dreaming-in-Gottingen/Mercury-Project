@@ -10,9 +10,11 @@ CXX_FLAGS = -g -fPIC -Wno-multichar
 #windows platform
 #LD_FLAGS = -lpthread -L../libs libutils.so
 #linux platform
-LD_FLAGS = -lpthread -L../libs -lutils -lfoundation -lcorkscrew
+#LD_FLAGS = -lpthread -L../libs -lutils -lfoundation -lcorkscrew
+LD_FLAGS = -lpthread -L../libs -lutils -lfoundation
 
-CXX_SRC = $(wildcard *.cpp)
+#CXX_SRC = $(wildcard *.cpp)
+CXX_SRC = $(filter-out CallStackDemo.cpp, $(wildcard *.cpp))
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)
 

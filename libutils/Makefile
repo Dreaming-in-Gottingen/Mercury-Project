@@ -9,7 +9,8 @@ PLATFORM_FLAGS = -DANDROID_SMP=1 -D__i386__ -D__x86_64__
 
 INC_DIRS = -I include
 CXX_FLAGS = -fPIC $(PLATFORM_FLAGS)
-LD_FLAGS = -lpthread -L../libs -lcorkscrew
+
+LD_FLAGS = -lpthread -L../libs
 
 CXX_SRC = RefBase.cpp \
           Timers.cpp \
@@ -23,8 +24,8 @@ CXX_SRC = RefBase.cpp \
           VectorImpl.cpp \
           Threads.cpp \
           Printer.cpp \
-          CallStack.cpp \
           atomic.cpp \
+          #CallStack.cpp \
 
 CXX_OBJ = $(patsubst %.cpp, %.o, $(CXX_SRC))
 OBJS = $(CXX_OBJ)
